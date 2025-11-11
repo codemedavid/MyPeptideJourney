@@ -372,7 +372,7 @@ Please confirm this order. Thank you!
                           </p>
                         </div>
                         <span className="font-semibold text-gray-900 text-sm">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ₱{(item.price * item.quantity).toLocaleString('en-PH', { minimumFractionDigits: 0 })}
                         </span>
                       </div>
                       <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
