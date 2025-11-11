@@ -116,13 +116,13 @@ ${paymentMethod ? `Account: ${paymentMethod.account_number}` : ''}
 Please confirm this order. Thank you!
     `.trim();
 
-    // Send order to WhatsApp
-    const whatsappNumber = '639058429200';
+    // Send order to Facebook Messenger
+    const facebookUsername = 'maria.m.donaire.2024';
     const encodedMessage = encodeURIComponent(orderDetails);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    const messengerUrl = `https://m.me/${facebookUsername}?text=${encodedMessage}`;
     
-    // Open WhatsApp
-    window.open(whatsappUrl, '_blank');
+    // Open Facebook Messenger
+    window.open(messengerUrl, '_blank');
     
     // Show confirmation
     setStep('confirmation');
@@ -141,7 +141,7 @@ Please confirm this order. Thank you!
               <Sparkles className="w-7 h-7 text-yellow-500" />
             </h1>
             <p className="text-gray-600 mb-8 text-base md:text-lg leading-relaxed">
-              Your order has been sent to our WhatsApp. 
+              Your order has been sent to our Facebook Messenger. 
               <Heart className="inline w-5 h-5 text-pink-500 mx-1" />
               We will confirm your order and send you the payment details shortly!
             </p>
@@ -154,7 +154,7 @@ Please confirm this order. Thank you!
               <ul className="space-y-3 text-sm md:text-base text-gray-700">
                 <li className="flex items-start gap-3">
                   <span className="text-2xl">1️⃣</span>
-                  <span>We'll confirm your order on WhatsApp within 24 hours</span>
+                  <span>We'll confirm your order on Messenger within 24 hours</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-2xl">2️⃣</span>
@@ -527,7 +527,7 @@ Please confirm this order. Thank you!
               className="w-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:from-green-500 hover:via-green-600 hover:to-green-700 text-white py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center justify-center gap-2"
             >
               <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />
-              Send Order to WhatsApp
+              Send Order to Messenger
             </button>
           </div>
 

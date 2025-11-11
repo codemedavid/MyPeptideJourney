@@ -1,5 +1,15 @@
 -- Update product prices based on new pricing structure
 
+-- First, add UNIQUE constraint to name column if it doesn't exist
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'products_name_key'
+  ) THEN
+    ALTER TABLE products ADD CONSTRAINT products_name_key UNIQUE (name);
+  END IF;
+END $$;
+
 -- Update Tirzepatide 20mg to ₱3,000
 UPDATE products 
 SET base_price = 3000.00
