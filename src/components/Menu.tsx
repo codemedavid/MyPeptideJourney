@@ -1,5 +1,6 @@
 import React from 'react';
 import MenuItemCard from './MenuItemCard';
+import ProductDetailModal from './ProductDetailModal';
 import Hero from './Hero';
 import type { Product, ProductVariation, CartItem } from '../types';
 import { Search, Filter, Sparkles, Package } from 'lucide-react';
@@ -14,6 +15,18 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [sortBy, setSortBy] = React.useState<'name' | 'price' | 'purity'>('name');
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const handleViewDetails = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
 
   // Filter products based on search
   const filteredProducts = menuItems.filter(product => 
@@ -22,8 +35,21 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems }) => {
     product.cas_number?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Sort products
+  // Helper function to check if product is Tirzepatide (best seller)
+  const isTirzepatide = (product: Product) => {
+    return product.name.toLowerCase().includes('tirzepatide');
+  };
+
+  // Sort products - Always prioritize Tirzepatide products first
   const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const aIsTirzepatide = isTirzepatide(a);
+    const bIsTirzepatide = isTirzepatide(b);
+    
+    // If one is Tirzepatide and the other isn't, Tirzepatide comes first
+    if (aIsTirzepatide && !bIsTirzepatide) return -1;
+    if (!aIsTirzepatide && bIsTirzepatide) return 1;
+    
+    // If both are Tirzepatide or both are not, sort by selected criteria
     switch (sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
@@ -118,11 +144,22 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems }) => {
                 product={product}
                 onAddToCart={addToCart}
                 cartQuantity={getCartQuantity(product.id)}
+                onViewDetails={handleViewDetails}
               />
             ))}
           </div>
         )}
       </div>
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onAddToCart={addToCart}
+        />
+      )}
     </div>
   );
 };

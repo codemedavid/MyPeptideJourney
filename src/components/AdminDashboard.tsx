@@ -34,7 +34,8 @@ const AdminDashboard: React.FC = () => {
     storage_conditions: 'Store at -20°C',
     stock_quantity: 0,
     image_url: null,
-    discount_active: false
+    discount_active: false,
+    show_complete_set_details: false
   });
 
   const handleAddProduct = () => {
@@ -54,7 +55,8 @@ const AdminDashboard: React.FC = () => {
       storage_conditions: 'Store at -20°C',
       stock_quantity: 0,
       image_url: null,
-      discount_active: false
+      discount_active: false,
+      show_complete_set_details: false
     });
   };
 
@@ -395,6 +397,16 @@ const AdminDashboard: React.FC = () => {
                       className="w-4 h-4 md:w-5 md:h-5 text-green-600 rounded focus:ring-green-500"
                     />
                     <span className="text-xs md:text-sm font-semibold text-gray-700">✅ Available</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.show_complete_set_details || false}
+                      onChange={(e) => setFormData({ ...formData, show_complete_set_details: e.target.checked })}
+                      className="w-4 h-4 md:w-5 md:h-5 text-purple-600 rounded focus:ring-purple-500"
+                    />
+                    <span className="text-xs md:text-sm font-semibold text-gray-700">📦 Show Complete Set Details</span>
                   </label>
                 </div>
               </div>

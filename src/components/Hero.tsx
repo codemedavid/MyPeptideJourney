@@ -31,12 +31,6 @@ const Hero: React.FC = () => {
             <Heart className="inline-block w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 text-pink-500 ml-2 md:ml-3 mb-1 md:mb-2 animate-pulse" />
           </h1>
           
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-700 mb-6 md:mb-8 lg:mb-10 max-w-3xl mx-auto leading-relaxed px-2">
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Verified reseller- Jonina David
-            </span>
-          </p>
-          
           {/* Trust Badges */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto mb-6 md:mb-8">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 lg:p-8 shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-blue-100">
@@ -61,9 +55,9 @@ const Hero: React.FC = () => {
             <p className="text-xs sm:text-sm md:text-base text-center text-gray-600 leading-relaxed">
               <span className="inline-flex items-center gap-1 md:gap-1.5">
                 <Shield className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
-                <strong className="text-blue-700">Research Use Only:</strong>
+                <strong className="text-blue-700">RESEARCH USE ONLY:</strong>
               </span>
-              {' '}All peptides are sold for research purposes only. Not for human consumption.
+              {' '}ALWAYS CONSULT A LICENSED HEALTHCARE PROFESSIONAL FOR PERSONALISED MEDICAL GUIDANCE
             </p>
           </div>
         </div>

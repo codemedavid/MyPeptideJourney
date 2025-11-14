@@ -26,6 +26,9 @@ export interface Product {
   image_url: string | null;
   safety_sheet_url: string | null;
   
+  // Complete set details
+  show_complete_set_details?: boolean;
+  
   created_at: string;
   updated_at: string;
   

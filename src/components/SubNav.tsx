@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, FlaskConical, Sparkles, Dumbbell, Heart, Brain } from 'lucide-react';
+import { Grid, FlaskConical, Sparkles, Dumbbell, Heart, Brain, Package } from 'lucide-react';
 import { useCategories } from '../hooks/useCategories';
 
 interface SubNavProps {
@@ -9,6 +9,7 @@ interface SubNavProps {
 
 const iconMap: { [key: string]: React.ReactElement } = {
   Grid: <Grid className="w-5 h-5" />,
+  Package: <Package className="w-5 h-5" />,
   FlaskConical: <FlaskConical className="w-5 h-5" />,
   Sparkles: <Sparkles className="w-5 h-5" />,
   Dumbbell: <Dumbbell className="w-5 h-5" />,
@@ -19,6 +20,7 @@ const iconMap: { [key: string]: React.ReactElement } = {
 // Cute gradient colors for each category
 const categoryColors: { [key: string]: string } = {
   all: 'from-blue-400 to-blue-600',
+  'complete-set': 'from-green-400 to-green-600',
   research: 'from-purple-400 to-purple-600',
   cosmetic: 'from-pink-400 to-pink-600',
   performance: 'from-orange-400 to-orange-600',

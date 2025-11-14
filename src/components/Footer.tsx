@@ -4,10 +4,10 @@ import { MessageCircle, Shield, Heart, Sparkles } from 'lucide-react';
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
-  // WhatsApp number: +63 905 842 9200
-  const whatsappNumber = '639058429200';
-  const whatsappMessage = encodeURIComponent('Hi! I would like to inquire about your peptide products.');
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+  // Facebook Messenger
+  const facebookUsername = 'maria.m.donaire.2024';
+  const messengerMessage = encodeURIComponent('Hi! I would like to inquire about your peptide products.');
+  const messengerUrl = `https://m.me/${facebookUsername}?text=${messengerMessage}`;
 
   return (
     <footer className="bg-gradient-to-r from-gray-800 to-gray-900 text-white">
@@ -31,15 +31,15 @@ const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* WhatsApp Button */}
+          {/* Messenger Button */}
           <a
-            href={whatsappUrl}
+            href={messengerUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white px-5 py-2.5 md:px-6 md:py-3 rounded-xl transition-all font-medium text-sm md:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-5 py-2.5 md:px-6 md:py-3 rounded-xl transition-all font-medium text-sm md:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
-            Chat on WhatsApp
+            Chat on Messenger
           </a>
 
         </div>
@@ -54,9 +54,9 @@ const Footer: React.FC = () => {
               <Heart className="w-3 h-3 text-pink-400 animate-pulse" />
               © {currentYear} My Peptide Journey. All rights reserved.
             </p>
-            <p className="text-[9px] md:text-[10px] text-gray-400 flex items-center justify-center gap-1">
-              <Shield className="w-3 h-3 text-blue-400" />
-              All products are for research purposes only
+            <p className="text-[9px] md:text-[10px] text-gray-400 flex items-start justify-center gap-1 text-center max-w-4xl mx-auto px-2">
+              <Shield className="w-3 h-3 text-blue-400 mt-0.5 flex-shrink-0" />
+              <span><strong>RESEARCH USE ONLY:</strong> ALWAYS CONSULT A LICENSED HEALTHCARE PROFESSIONAL FOR PERSONALISED MEDICAL GUIDANCE</span>
             </p>
           </div>
         </div>

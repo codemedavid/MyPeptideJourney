@@ -10,10 +10,10 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClick }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // WhatsApp number: +63 905 842 9200
-  const whatsappNumber = '639058429200';
-  const whatsappMessage = encodeURIComponent('Hi! I am interested in your peptide products.');
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+  // Facebook Messenger
+  const facebookUsername = 'maria.m.donaire.2024';
+  const messengerMessage = encodeURIComponent('Hi! I am interested in your peptide products.');
+  const messengerUrl = `https://m.me/${facebookUsername}?text=${messengerMessage}`;
 
   return (
     <>
@@ -62,13 +62,13 @@ const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClic
                   Products
                 </button>
                 <a
-                  href={whatsappUrl}
+                  href={messengerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 lg:gap-2 bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white px-4 py-2 lg:px-5 lg:py-2.5 rounded-xl transition-all font-medium text-sm lg:text-base shadow-md hover:shadow-lg transform hover:scale-105"
+                  className="flex items-center gap-1.5 lg:gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 lg:px-5 lg:py-2.5 rounded-xl transition-all font-medium text-sm lg:text-base shadow-md hover:shadow-lg transform hover:scale-105"
                 >
                   <MessageCircle className="w-4 h-4 lg:w-5 lg:h-5" />
-                  WhatsApp
+                  Messenger
                 </a>
               </nav>
 
@@ -122,14 +122,14 @@ const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClic
                   🧪 Products
                 </button>
                 <a
-                  href={whatsappUrl}
+                  href={messengerUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-xl hover:from-green-500 hover:to-green-600 transition-all font-medium text-sm shadow-md"
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium text-sm shadow-md"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <MessageCircle className="w-4 h-4" />
-                  Chat on WhatsApp
+                  Chat on Messenger
                 </a>
                 <div className="border-t border-gray-100 pt-2 mt-1">
                   <button

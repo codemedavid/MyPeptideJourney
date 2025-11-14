@@ -23,9 +23,28 @@ export function useMenu() {
 
       if (error) throw error;
       
+      // Sort to prioritize Tirzepatide products (best sellers)
+      const sortedData = (data || []).sort((a, b) => {
+        const aIsTirzepatide = a.name.toLowerCase().includes('tirzepatide');
+        const bIsTirzepatide = b.name.toLowerCase().includes('tirzepatide');
+        
+        if (aIsTirzepatide && !bIsTirzepatide) return -1;
+        if (!aIsTirzepatide && bIsTirzepatide) return 1;
+        
+        // If both are Tirzepatide, sort by featured then name
+        if (aIsTirzepatide && bIsTirzepatide) {
+          if (a.featured !== b.featured) return b.featured ? 1 : -1;
+          return a.name.localeCompare(b.name);
+        }
+        
+        // For non-Tirzepatide products, sort by featured then name
+        if (a.featured !== b.featured) return b.featured ? 1 : -1;
+        return a.name.localeCompare(b.name);
+      });
+      
       // Fetch variations for each product
       const productsWithVariations = await Promise.all(
-        (data || []).map(async (product) => {
+        sortedData.map(async (product) => {
           const { data: variations } = await supabase
             .from('product_variations')
             .select('*')

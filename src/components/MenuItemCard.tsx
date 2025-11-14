@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus, ShoppingCart, Award, FlaskConical, Package } from 'lucide-react';
+import { Plus, Minus, ShoppingCart, Award, FlaskConical, Package, Eye, AlertTriangle } from 'lucide-react';
 import type { Product, ProductVariation } from '../types';
 
 interface MenuItemCardProps {
@@ -7,12 +7,14 @@ interface MenuItemCardProps {
   onAddToCart: (product: Product, variation?: ProductVariation, quantity?: number) => void;
   cartQuantity?: number;
   onUpdateQuantity?: (index: number, quantity: number) => void;
+  onViewDetails?: (product: Product) => void;
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({ 
   product, 
   onAddToCart, 
   cartQuantity = 0,
+  onViewDetails,
 }) => {
   const [selectedVariation, setSelectedVariation] = useState<ProductVariation | undefined>(
     product.variations && product.variations.length > 0 ? product.variations[0] : undefined
@@ -26,6 +28,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       : product.base_price;
 
   const hasDiscount = !selectedVariation && product.discount_active && product.discount_price;
+  const isTirzepatide = product.name.toLowerCase().includes('tirzepatide');
 
   const handleAddToCart = () => {
     onAddToCart(product, selectedVariation, quantity);
@@ -37,13 +40,16 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   return (
     <div className="card card-hover overflow-hidden animate-fadeIn">
-      {/* Product Image */}
-      <div className="relative h-32 sm:h-40 md:h-48 bg-gradient-to-br from-blue-50 to-blue-100 overflow-hidden">
+      {/* Product Image - Clickable */}
+      <div 
+        className="relative h-32 sm:h-40 md:h-48 bg-gradient-to-br from-blue-50 to-blue-100 overflow-hidden cursor-pointer group"
+        onClick={() => onViewDetails?.(product)}
+      >
         {product.image_url ? (
           <img 
             src={product.image_url} 
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -51,8 +57,22 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
           </div>
         )}
         
+        {/* View Details Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg flex items-center gap-2">
+            <Eye className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-semibold text-blue-600">View Details</span>
+          </div>
+        </div>
+        
         {/* Badges */}
-        <div className="absolute top-1.5 left-1.5 md:top-3 md:left-3 flex flex-col gap-1 md:gap-2">
+        <div className="absolute top-1.5 left-1.5 md:top-3 md:left-3 flex flex-col gap-1 md:gap-2 z-10">
+          {isTirzepatide && (
+            <span className="inline-flex items-center px-2 py-1 md:px-3 md:py-1.5 rounded-full text-[10px] md:text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg animate-pulse border-2 border-white">
+              <AlertTriangle className="w-3 h-3 md:w-3.5 md:h-3.5 mr-1 animate-pulse" />
+              ⚠️ LIMITED STOCK
+            </span>
+          )}
           {product.featured && (
             <span className="inline-flex items-center px-1.5 py-0.5 md:px-2.5 md:py-1 rounded-full text-[10px] md:text-xs font-medium bg-blue-100 text-blue-700 shadow-md">
               <Award className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
@@ -85,8 +105,27 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
       {/* Product Details */}
       <div className="p-3 md:p-4 lg:p-5">
-        <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 md:mb-2 leading-tight">{product.name}</h3>
+        <h3 
+          className="text-sm sm:text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-1 md:mb-2 leading-tight cursor-pointer hover:text-blue-600 transition-colors"
+          onClick={() => onViewDetails?.(product)}
+        >
+          {product.name}
+        </h3>
         <p className="text-[11px] sm:text-xs md:text-sm text-gray-600 mb-2 md:mb-3 lg:mb-4 line-clamp-2">{product.description}</p>
+        
+        {/* View Details Button */}
+        {onViewDetails && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails(product);
+            }}
+            className="mb-2 md:mb-3 text-[10px] sm:text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 transition-colors"
+          >
+            <Eye className="w-3 h-3" />
+            View Full Details
+          </button>
+        )}
 
         {/* Scientific Details */}
         <div className="grid grid-cols-2 gap-1 md:gap-2 mb-2 md:mb-3 lg:mb-4">
@@ -110,7 +149,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
         {/* Variations (Sizes) */}
         {product.variations && product.variations.length > 0 && (
-          <div className="mb-2 md:mb-3 lg:mb-4">
+          <div className="mb-2 md:mb-3 lg:mb-4" onClick={(e) => e.stopPropagation()}>
             <label className="block text-[11px] md:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
               <Package className="w-3 h-3 md:w-4 md:h-4 inline mr-0.5 md:mr-1" />
               Select Size:
@@ -119,7 +158,10 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               {product.variations.map((variation) => (
                 <button
                   key={variation.id}
-                  onClick={() => setSelectedVariation(variation)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedVariation(variation);
+                  }}
                   disabled={variation.stock_quantity === 0}
                   className={`
                     px-1.5 py-1 md:px-3 md:py-2 rounded-md md:rounded-lg text-[10px] md:text-sm font-medium transition-all
@@ -154,10 +196,13 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         </div>
 
         {/* Quantity Controls */}
-        <div className="flex items-center gap-1.5 md:gap-2 lg:gap-3 mb-2 md:mb-3 lg:mb-4">
+        <div className="flex items-center gap-1.5 md:gap-2 lg:gap-3 mb-2 md:mb-3 lg:mb-4" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center border-2 border-gray-200 rounded-md md:rounded-lg">
             <button
-              onClick={decrementQuantity}
+              onClick={(e) => {
+                e.stopPropagation();
+                decrementQuantity();
+              }}
               className="p-1 md:p-1.5 lg:p-2 hover:bg-gray-100 transition-colors"
             >
               <Minus className="w-3 h-3 md:w-4 md:h-4 text-gray-600" />
@@ -166,7 +211,10 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               {quantity}
             </span>
             <button
-              onClick={incrementQuantity}
+              onClick={(e) => {
+                e.stopPropagation();
+                incrementQuantity();
+              }}
               className="p-1 md:p-1.5 lg:p-2 hover:bg-gray-100 transition-colors"
             >
               <Plus className="w-3 h-3 md:w-4 md:h-4 text-gray-600" />
@@ -175,7 +223,10 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
           {/* Add to Cart Button */}
           <button
-            onClick={handleAddToCart}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAddToCart();
+            }}
             disabled={!product.available || product.stock_quantity === 0}
             className="flex-1 bg-blue-600 text-white px-2 py-1.5 md:px-4 md:py-2 lg:px-6 lg:py-3 rounded-md md:rounded-lg font-medium transition-all duration-200 hover:bg-blue-700 active:scale-95 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[11px] sm:text-xs md:text-sm lg:text-base"
           >
@@ -193,9 +244,48 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         )}
 
         {/* Stock Warning */}
-        {product.stock_quantity > 0 && product.stock_quantity < 10 && (
+        {isTirzepatide && product.stock_quantity > 0 && (
+          <div className="text-center bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-300 rounded-lg md:rounded-xl p-2 md:p-2.5 mb-2 md:mb-3">
+            <div className="flex items-center justify-center gap-1.5 md:gap-2">
+              <AlertTriangle className="w-3 h-3 md:w-4 md:h-4 text-red-600 animate-pulse" />
+              <span className="text-[10px] md:text-xs font-bold text-red-700">
+                ⚠️ LIMITED STOCK - Only {product.stock_quantity} left!
+              </span>
+            </div>
+          </div>
+        )}
+        {!isTirzepatide && product.stock_quantity > 0 && product.stock_quantity < 10 && (
           <div className="text-center text-[9px] md:text-[10px] lg:text-xs text-orange-600">
             Only {product.stock_quantity} left in stock
+          </div>
+        )}
+
+        {/* Complete Set Details */}
+        {product.show_complete_set_details === true && (
+          <div className="mt-2 md:mt-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg md:rounded-xl p-2 md:p-3 border border-purple-200">
+            <p className="text-[10px] md:text-xs font-semibold text-purple-700 mb-1.5 md:mb-2">Complete Set Includes:</p>
+            <ul className="space-y-0.5 md:space-y-1 text-[9px] md:text-[10px] text-gray-700">
+              <li className="flex items-center gap-1.5">
+                <span className="text-purple-600">🧬</span>
+                <span>Peptide and BAC Water</span>
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-purple-600">🧬</span>
+                <span>Syringe for reconstitute</span>
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-purple-600">🧬</span>
+                <span>6pcs Insulin Syringe</span>
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-purple-600">🧬</span>
+                <span>Plastic container and box</span>
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="text-purple-600">🧬</span>
+                <span>10pcs alcohol pads</span>
+              </li>
+            </ul>
           </div>
         )}
       </div>
