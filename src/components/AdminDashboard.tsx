@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, ArrowLeft, Beaker, TrendingUp, Package, Users, Lock, FolderOpen, CreditCard, Settings, Sparkles, Heart } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, ArrowLeft, Beaker, TrendingUp, Package, Users, Lock, FolderOpen, CreditCard, Settings, Sparkles, Heart, MessageSquare } from 'lucide-react';
 import type { Product } from '../types';
 import { useMenu } from '../hooks/useMenu';
 import { useCategories } from '../hooks/useCategories';
@@ -7,6 +7,7 @@ import ImageUpload from './ImageUpload';
 import CategoryManager from './CategoryManager';
 import PaymentMethodManager from './PaymentMethodManager';
 import SiteSettingsManager from './SiteSettingsManager';
+import TestimonialManager from './TestimonialManager';
 
 const AdminDashboard: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -16,7 +17,7 @@ const AdminDashboard: React.FC = () => {
   const [loginError, setLoginError] = useState('');
   const { products, loading, addProduct, updateProduct, deleteProduct } = useMenu();
   const { categories } = useCategories();
-  const [currentView, setCurrentView] = useState<'dashboard' | 'products' | 'add' | 'edit' | 'categories' | 'payments' | 'settings'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'products' | 'add' | 'edit' | 'categories' | 'payments' | 'settings' | 'testimonials'>('dashboard');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -663,6 +664,11 @@ const AdminDashboard: React.FC = () => {
     );
   }
 
+  // Testimonials View
+  if (currentView === 'testimonials') {
+    return <TestimonialManager onBack={() => setCurrentView('dashboard')} />;
+  }
+
   // Dashboard View
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -807,6 +813,15 @@ const AdminDashboard: React.FC = () => {
                   <Settings className="h-3 w-3 md:h-5 md:w-5" />
                 </div>
                 <span className="text-xs md:text-sm font-medium text-gray-900">Site Settings</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('testimonials')}
+                className="w-full flex items-center gap-2 md:gap-3 p-2 md:p-3 text-left hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg md:rounded-xl transition-all group"
+              >
+                <div className="p-1.5 md:p-2 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-md md:rounded-lg text-white">
+                  <MessageSquare className="h-3 w-3 md:h-5 md:w-5" />
+                </div>
+                <span className="text-xs md:text-sm font-medium text-gray-900">Testimonials</span>
               </button>
             </div>
           </div>
