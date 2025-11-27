@@ -280,7 +280,6 @@ const CategoryManager: React.FC<CategoryManagerProps> = ({ onBack }) => {
                         <GripVertical className="h-3 w-3 md:h-4 md:w-4" />
                         <span className="text-[10px] md:text-sm text-gray-500">#{category.sort_order}</span>
                       </div>
-                      <div className="text-lg md:text-2xl flex-shrink-0">{category.icon}</div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">{category.name}</h3>
                         <p className="text-[10px] md:text-sm text-gray-500 truncate">ID: {category.id}</p>
