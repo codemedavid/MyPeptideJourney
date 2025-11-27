@@ -6,6 +6,7 @@ interface MenuItemCardProps {
   product: Product;
   onAddToCart: (product: Product, variation?: ProductVariation, quantity?: number) => void;
   cartQuantity?: number;
+  cartItems?: Array<{ product: Product; variation?: ProductVariation; quantity: number }>;
   onUpdateQuantity?: (index: number, quantity: number) => void;
   onViewDetails?: (product: Product) => void;
 }
@@ -14,6 +15,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   product, 
   onAddToCart, 
   cartQuantity = 0,
+  cartItems = [],
   onViewDetails,
 }) => {
   const [selectedVariation, setSelectedVariation] = useState<ProductVariation | undefined>(
@@ -35,7 +37,42 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     setQuantity(1);
   };
 
-  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  // Get available stock for current selection
+  const getAvailableStock = () => {
+    if (selectedVariation) {
+      return selectedVariation.stock_quantity;
+    }
+    return product.stock_quantity;
+  };
+
+  const availableStock = getAvailableStock();
+  
+  // Get current cart quantity for this specific product/variation combination
+  const getCurrentCartQuantity = () => {
+    if (cartItems.length > 0) {
+      return cartItems
+        .filter(item => 
+          item.product.id === product.id && 
+          (selectedVariation ? item.variation?.id === selectedVariation.id : !item.variation)
+        )
+        .reduce((sum, item) => sum + item.quantity, 0);
+    }
+    // Fallback to cartQuantity if cartItems not provided
+    return cartQuantity;
+  };
+
+  const currentCartQuantity = getCurrentCartQuantity();
+  const maxCanAdd = availableStock - currentCartQuantity;
+
+  const incrementQuantity = () => {
+    const newQuantity = quantity + 1;
+    if (newQuantity <= maxCanAdd) {
+      setQuantity(newQuantity);
+    } else {
+      alert(`Only ${maxCanAdd} ${maxCanAdd === 1 ? 'item' : 'items'} available to add. You already have ${currentCartQuantity} in your cart.`);
+    }
+  };
+  
   const decrementQuantity = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
 
   return (
@@ -210,12 +247,20 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <span className="px-2 md:px-3 lg:px-4 py-1 md:py-1.5 lg:py-2 font-semibold text-gray-800 min-w-[28px] md:min-w-[40px] text-center text-xs md:text-sm lg:text-base">
               {quantity}
             </span>
+            {maxCanAdd <= 5 && maxCanAdd > 0 && (
+              <span className="text-[9px] md:text-[10px] text-orange-600 font-medium ml-1">
+                (max: {maxCanAdd})
+              </span>
+            )}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 incrementQuantity();
               }}
-              className="p-1 md:p-1.5 lg:p-2 hover:bg-gray-100 transition-colors"
+              disabled={quantity >= maxCanAdd}
+              className={`p-1 md:p-1.5 lg:p-2 hover:bg-gray-100 transition-colors ${
+                quantity >= maxCanAdd ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
               <Plus className="w-3 h-3 md:w-4 md:h-4 text-gray-600" />
             </button>
@@ -227,7 +272,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               e.stopPropagation();
               handleAddToCart();
             }}
-            disabled={!product.available || product.stock_quantity === 0}
+            disabled={!product.available || availableStock === 0 || maxCanAdd === 0}
             className="flex-1 bg-blue-600 text-white px-2 py-1.5 md:px-4 md:py-2 lg:px-6 lg:py-3 rounded-md md:rounded-lg font-medium transition-all duration-200 hover:bg-blue-700 active:scale-95 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-[11px] sm:text-xs md:text-sm lg:text-base"
           >
             <ShoppingCart className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 inline mr-1 md:mr-2" />

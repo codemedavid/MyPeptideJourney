@@ -37,7 +37,25 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     onClose();
   };
 
-  const incrementQuantity = () => setQuantity(prev => prev + 1);
+  // Get available stock for current selection
+  const getAvailableStock = () => {
+    if (selectedVariation) {
+      return selectedVariation.stock_quantity;
+    }
+    return product.stock_quantity;
+  };
+
+  const availableStock = getAvailableStock();
+
+  const incrementQuantity = () => {
+    const newQuantity = quantity + 1;
+    if (newQuantity <= availableStock) {
+      setQuantity(newQuantity);
+    } else {
+      alert(`Only ${availableStock} ${availableStock === 1 ? 'item' : 'items'} available in stock.`);
+    }
+  };
+  
   const decrementQuantity = () => setQuantity(prev => prev > 1 ? prev - 1 : 1);
 
   return (
@@ -255,9 +273,17 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     <span className="px-4 py-2 font-semibold text-gray-800 min-w-[50px] text-center">
                       {quantity}
                     </span>
+                    {availableStock > 0 && (
+                      <span className="text-xs text-gray-500 ml-2">
+                        (max: {availableStock})
+                      </span>
+                    )}
                     <button
                       onClick={incrementQuantity}
-                      className="p-2 hover:bg-gray-100 transition-colors"
+                      disabled={quantity >= availableStock}
+                      className={`p-2 hover:bg-gray-100 transition-colors ${
+                        quantity >= availableStock ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
                     >
                       <Plus className="w-4 h-4 text-gray-600" />
                     </button>
@@ -266,7 +292,7 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
                 <button
                   onClick={handleAddToCart}
-                  disabled={!product.available || product.stock_quantity === 0}
+                  disabled={!product.available || availableStock === 0}
                   className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 hover:from-blue-700 hover:to-blue-800 active:scale-95 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <ShoppingCart className="w-5 h-5" />

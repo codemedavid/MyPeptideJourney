@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, ShieldCheck, Package, CreditCard, Sparkles, Heart } from 'lucide-react';
 import type { CartItem } from '../types';
 import { usePaymentMethods } from '../hooks/usePaymentMethods';
+import { useOrders } from '../contexts/OrdersContext';
 
 interface CheckoutProps {
   cartItems: CartItem[];
@@ -11,7 +12,9 @@ interface CheckoutProps {
 
 const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) => {
   const { paymentMethods } = usePaymentMethods();
+  const { createOrder } = useOrders();
   const [step, setStep] = useState<'details' | 'payment' | 'confirmation'>('details');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Customer Details
   const [fullName, setFullName] = useState('');
@@ -58,23 +61,62 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
     }
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    setIsSubmitting(true);
     const paymentMethod = paymentMethods.find(pm => pm.id === selectedPaymentMethod);
     
-    // Get current date and time
-    const now = new Date();
-    const dateTimeStamp = now.toLocaleString('en-PH', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    });
-    
-    const orderDetails = `
+    try {
+      // Save order to database
+      const orderItems = cartItems.map(item => ({
+        product_id: item.product.id,
+        product_name: item.product.name,
+        product_price: item.product.base_price,
+        variation_id: item.variation?.id,
+        variation_name: item.variation?.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total_price: item.price * item.quantity
+      }));
+
+      const fullAddress = `${address}, ${city}, ${state} ${zipCode}, ${country}`;
+
+      const result = await createOrder({
+        customer_name: fullName,
+        customer_email: email,
+        customer_phone: phone,
+        shipping_address: address,
+        shipping_city: city,
+        shipping_state: state,
+        shipping_zip_code: zipCode,
+        shipping_country: country,
+        total_amount: totalPrice,
+        shipping_fee: 0, // To be discussed
+        payment_method_id: selectedPaymentMethod || undefined,
+        payment_method_name: paymentMethod?.name,
+        notes: notes || undefined,
+        items: orderItems
+      });
+
+      if (!result.success) {
+        alert('Failed to save order. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Get current date and time
+      const now = new Date();
+      const dateTimeStamp = now.toLocaleString('en-PH', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      
+      const orderDetails = `
 🧪 MY PEPTIDE JOURNEY - NEW ORDER
 
 📅 ORDER DATE & TIME
@@ -114,18 +156,24 @@ ${paymentMethod ? `Account: ${paymentMethod.account_number}` : ''}
 
 
 Please confirm this order. Thank you!
-    `.trim();
+      `.trim();
 
-    // Send order to Facebook Messenger
-    const facebookUsername = 'maria.m.donaire.2024';
-    const encodedMessage = encodeURIComponent(orderDetails);
-    const messengerUrl = `https://m.me/${facebookUsername}?text=${encodedMessage}`;
-    
-    // Open Facebook Messenger
-    window.open(messengerUrl, '_blank');
-    
-    // Show confirmation
-    setStep('confirmation');
+      // Send order to Facebook Messenger
+      const facebookUsername = 'maria.m.donaire.2024';
+      const encodedMessage = encodeURIComponent(orderDetails);
+      const messengerUrl = `https://m.me/${facebookUsername}?text=${encodedMessage}`;
+      
+      // Open Facebook Messenger
+      window.open(messengerUrl, '_blank');
+      
+      // Show confirmation
+      setStep('confirmation');
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (step === 'confirmation') {
@@ -524,10 +572,13 @@ Please confirm this order. Thank you!
 
             <button
               onClick={handlePlaceOrder}
-              className="w-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:from-green-500 hover:via-green-600 hover:to-green-700 text-white py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+              disabled={isSubmitting}
+              className={`w-full bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:from-green-500 hover:via-green-600 hover:to-green-700 text-white py-3 md:py-4 rounded-2xl font-bold text-base md:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all flex items-center justify-center gap-2 ${
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
               <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />
-              Send Order to Messenger
+              {isSubmitting ? 'Processing...' : 'Send Order to Messenger'}
             </button>
           </div>
 

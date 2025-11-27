@@ -144,6 +144,7 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems }) => {
                 product={product}
                 onAddToCart={addToCart}
                 cartQuantity={getCartQuantity(product.id)}
+                cartItems={cartItems}
                 onViewDetails={handleViewDetails}
               />
             ))}

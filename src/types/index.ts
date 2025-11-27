@@ -93,3 +93,45 @@ export interface OrderDetails {
   payment_method: string;
   notes?: string;
 }
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  product_id: string;
+  product_name: string;
+  product_price: number;
+  variation_id?: string | null;
+  variation_name?: string | null;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  created_at: string;
+  product?: {
+    id: string;
+    name: string;
+    image_url: string | null;
+  };
+}
+
+export interface Order {
+  id: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  shipping_address: string;
+  shipping_city: string;
+  shipping_state: string;
+  shipping_zip_code: string;
+  shipping_country: string;
+  total_amount: number;
+  shipping_fee: number;
+  payment_method_id?: string | null;
+  payment_method_name?: string | null;
+  notes?: string | null;
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  confirmed_at?: string | null;
+  completed_at?: string | null;
+  created_at: string;
+  updated_at: string;
+  order_items?: OrderItem[];
+}

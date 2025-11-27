@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Menu, X, MessageCircle, Sparkles } from 'lucide-react';
+import { ShoppingCart, Menu, X, MessageCircle, Sparkles, Calculator } from 'lucide-react';
 
 interface HeaderProps {
   cartItemsCount: number;
   onCartClick: () => void;
   onMenuClick: () => void;
+  onCalculatorClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClick }) => {
+const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClick, onCalculatorClick }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Facebook Messenger
@@ -61,6 +62,15 @@ const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClic
                 >
                   Products
                 </button>
+                {onCalculatorClick && (
+                  <button
+                    onClick={onCalculatorClick}
+                    className="px-3 py-2 lg:px-4 lg:py-2 text-sm lg:text-base text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all font-medium flex items-center gap-1.5"
+                  >
+                    <Calculator className="w-4 h-4" />
+                    Calculator
+                  </button>
+                )}
                 <a
                   href="/testimonials"
                   className="px-3 py-2 lg:px-4 lg:py-2 text-sm lg:text-base text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all font-medium"
@@ -127,6 +137,18 @@ const Header: React.FC<HeaderProps> = ({ cartItemsCount, onCartClick, onMenuClic
                 >
                   🧪 Products
                 </button>
+                {onCalculatorClick && (
+                  <button
+                    onClick={() => {
+                      onCalculatorClick();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="text-left px-4 py-2.5 text-gray-700 hover:bg-blue-50 rounded-xl transition-colors font-medium text-sm border-2 border-transparent hover:border-blue-200 flex items-center gap-2"
+                  >
+                    <Calculator className="w-4 h-4" />
+                    Calculator
+                  </button>
+                )}
                 <a
                   href="/testimonials"
                   onClick={() => setMobileMenuOpen(false)}

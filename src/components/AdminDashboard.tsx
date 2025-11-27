@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, ArrowLeft, Beaker, TrendingUp, Package, Users, Lock, FolderOpen, CreditCard, Settings, Sparkles, Heart, MessageSquare } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, ArrowLeft, Beaker, TrendingUp, Package, Users, Lock, FolderOpen, CreditCard, Settings, Sparkles, Heart, MessageSquare, ShoppingCart, Warehouse } from 'lucide-react';
 import type { Product } from '../types';
 import { useMenu } from '../hooks/useMenu';
 import { useCategories } from '../hooks/useCategories';
@@ -8,6 +8,8 @@ import CategoryManager from './CategoryManager';
 import PaymentMethodManager from './PaymentMethodManager';
 import SiteSettingsManager from './SiteSettingsManager';
 import TestimonialManager from './TestimonialManager';
+import InventoryManagement from './InventoryManagement';
+import OrdersManagement from './OrdersManagement';
 
 const AdminDashboard: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -17,7 +19,7 @@ const AdminDashboard: React.FC = () => {
   const [loginError, setLoginError] = useState('');
   const { products, loading, addProduct, updateProduct, deleteProduct } = useMenu();
   const { categories } = useCategories();
-  const [currentView, setCurrentView] = useState<'dashboard' | 'products' | 'add' | 'edit' | 'categories' | 'payments' | 'settings' | 'testimonials'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'products' | 'add' | 'edit' | 'categories' | 'payments' | 'settings' | 'testimonials' | 'inventory' | 'orders'>('dashboard');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -669,6 +671,16 @@ const AdminDashboard: React.FC = () => {
     return <TestimonialManager onBack={() => setCurrentView('dashboard')} />;
   }
 
+  // Inventory Management View
+  if (currentView === 'inventory') {
+    return <InventoryManagement onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  // Orders Management View
+  if (currentView === 'orders') {
+    return <OrdersManagement onBack={() => setCurrentView('dashboard')} />;
+  }
+
   // Dashboard View
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -822,6 +834,24 @@ const AdminDashboard: React.FC = () => {
                   <MessageSquare className="h-3 w-3 md:h-5 md:w-5" />
                 </div>
                 <span className="text-xs md:text-sm font-medium text-gray-900">Testimonials</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('inventory')}
+                className="w-full flex items-center gap-2 md:gap-3 p-2 md:p-3 text-left hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg md:rounded-xl transition-all group"
+              >
+                <div className="p-1.5 md:p-2 bg-gradient-to-br from-blue-400 to-blue-600 rounded-md md:rounded-lg text-white">
+                  <Warehouse className="h-3 w-3 md:h-5 md:w-5" />
+                </div>
+                <span className="text-xs md:text-sm font-medium text-gray-900">Inventory Management</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('orders')}
+                className="w-full flex items-center gap-2 md:gap-3 p-2 md:p-3 text-left hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg md:rounded-xl transition-all group"
+              >
+                <div className="p-1.5 md:p-2 bg-gradient-to-br from-purple-400 to-purple-600 rounded-md md:rounded-lg text-white">
+                  <ShoppingCart className="h-3 w-3 md:h-5 md:w-5" />
+                </div>
+                <span className="text-xs md:text-sm font-medium text-gray-900">Orders Management</span>
               </button>
             </div>
           </div>

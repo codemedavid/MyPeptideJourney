@@ -138,22 +138,40 @@ const Cart: React.FC<CartProps> = ({
 
                     {/* Quantity and Price */}
                     <div className="flex justify-between items-center mt-3 md:mt-4">
-                      <div className="flex items-center border-2 border-gray-200 rounded-xl bg-white shadow-sm">
-                        <button
-                          onClick={() => updateQuantity(index, item.quantity - 1)}
-                          className="p-1.5 md:p-2 hover:bg-blue-50 transition-colors rounded-l-xl"
-                        >
-                          <Minus className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
-                        </button>
-                        <span className="px-3 md:px-4 py-1.5 md:py-2 font-bold text-gray-800 min-w-[32px] md:min-w-[40px] text-center text-sm md:text-base">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => updateQuantity(index, item.quantity + 1)}
-                          className="p-1.5 md:p-2 hover:bg-blue-50 transition-colors rounded-r-xl"
-                        >
-                          <Plus className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
-                        </button>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center border-2 border-gray-200 rounded-xl bg-white shadow-sm">
+                          <button
+                            onClick={() => updateQuantity(index, item.quantity - 1)}
+                            className="p-1.5 md:p-2 hover:bg-blue-50 transition-colors rounded-l-xl"
+                          >
+                            <Minus className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
+                          </button>
+                          <span className="px-3 md:px-4 py-1.5 md:py-2 font-bold text-gray-800 min-w-[32px] md:min-w-[40px] text-center text-sm md:text-base">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => {
+                              const availableStock = item.variation ? item.variation.stock_quantity : item.product.stock_quantity;
+                              if (item.quantity + 1 > availableStock) {
+                                alert(`Only ${availableStock} ${availableStock === 1 ? 'item' : 'items'} available in stock.`);
+                                return;
+                              }
+                              updateQuantity(index, item.quantity + 1);
+                            }}
+                            disabled={
+                              (item.variation ? item.variation.stock_quantity : item.product.stock_quantity) <= item.quantity
+                            }
+                            className={`p-1.5 md:p-2 hover:bg-blue-50 transition-colors rounded-r-xl ${
+                              (item.variation ? item.variation.stock_quantity : item.product.stock_quantity) <= item.quantity
+                                ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                          >
+                            <Plus className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
+                          </button>
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Stock: {item.variation ? item.variation.stock_quantity : item.product.stock_quantity}
+                        </div>
                       </div>
 
                       <div className="text-right">

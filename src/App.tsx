@@ -11,15 +11,17 @@ import FloatingCartButton from './components/FloatingCartButton';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
 import Testimonials from './components/Testimonials';
+import PeptideCalculator from './components/PeptideCalculator';
 import { useMenu } from './hooks/useMenu';
+import { OrdersProvider } from './contexts/OrdersContext';
 
 function MainApp() {
   const cart = useCart();
   const { menuItems } = useMenu();
-  const [currentView, setCurrentView] = React.useState<'menu' | 'cart' | 'checkout'>('menu');
+  const [currentView, setCurrentView] = React.useState<'menu' | 'cart' | 'checkout' | 'calculator'>('menu');
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
 
-  const handleViewChange = (view: 'menu' | 'cart' | 'checkout') => {
+  const handleViewChange = (view: 'menu' | 'cart' | 'checkout' | 'calculator') => {
     setCurrentView(view);
     // Scroll to top when changing views
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -40,6 +42,7 @@ function MainApp() {
         cartItemsCount={cart.getTotalItems()}
         onCartClick={() => handleViewChange('cart')}
         onMenuClick={() => handleViewChange('menu')}
+        onCalculatorClick={() => handleViewChange('calculator')}
       />
       
       {currentView === 'menu' && (
@@ -78,15 +81,23 @@ function MainApp() {
             onBack={() => handleViewChange('cart')}
           />
         )}
+        
+        {currentView === 'calculator' && (
+          <PeptideCalculator 
+            onBack={() => handleViewChange('menu')}
+          />
+        )}
       </main>
       
-      {currentView === 'menu' && (
+      {(currentView === 'menu' || currentView === 'calculator') && (
         <>
-          <FloatingCartButton 
-            itemCount={cart.getTotalItems()}
-            onCartClick={() => handleViewChange('cart')}
-          />
-          <Footer />
+          {currentView === 'menu' && (
+            <FloatingCartButton 
+              itemCount={cart.getTotalItems()}
+              onCartClick={() => handleViewChange('cart')}
+            />
+          )}
+          {currentView === 'menu' && <Footer />}
         </>
       )}
     </div>
@@ -95,13 +106,16 @@ function MainApp() {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainApp />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/testimonials" element={<Testimonials />} />
-      </Routes>
-    </Router>
+    <OrdersProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainApp />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/testimonials" element={<Testimonials />} />
+          <Route path="/calculator" element={<PeptideCalculator />} />
+        </Routes>
+      </Router>
+    </OrdersProvider>
   );
 }
 
