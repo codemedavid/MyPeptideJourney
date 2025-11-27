@@ -258,18 +258,18 @@ const InventoryManagement: React.FC<InventoryManagementProps> = ({ onBack }) => 
               return (
                 <div
                   key={product.id}
-                  className="bg-white/90 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-lg p-3 md:p-6 border-2 border-blue-100 hover:shadow-xl transition-all"
+                  className="bg-white/90 backdrop-blur-sm rounded-lg md:rounded-2xl shadow-lg p-2 md:p-6 border-2 border-blue-100 hover:shadow-xl transition-all"
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4">
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-2 md:mb-3">
-                        <h3 className="text-base md:text-xl font-bold text-gray-900 truncate">{product.name}</h3>
-                        <span className="px-2 md:px-3 py-0.5 md:py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] md:text-xs font-semibold whitespace-nowrap">
+                      <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-1.5 md:mb-3">
+                        <h3 className="text-sm md:text-xl font-bold text-gray-900 truncate">{product.name}</h3>
+                        <span className="px-1.5 md:px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[9px] md:text-xs font-semibold whitespace-nowrap">
                           {category?.name || product.category}
                         </span>
                         <span
-                          className={`px-2 md:px-3 py-0.5 md:py-1 rounded-full text-[10px] md:text-xs font-semibold whitespace-nowrap ${
+                          className={`px-1.5 md:px-3 py-0.5 rounded-full text-[9px] md:text-xs font-semibold whitespace-nowrap ${
                             isOutOfStock
                               ? 'bg-red-100 text-red-700'
                               : isLowStock
@@ -277,47 +277,47 @@ const InventoryManagement: React.FC<InventoryManagementProps> = ({ onBack }) => 
                               : 'bg-green-100 text-green-700'
                           }`}
                         >
-                          {isOutOfStock ? 'OUT OF STOCK' : 'IN STOCK'}
+                          {isOutOfStock ? 'OUT' : 'IN'}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 text-xs md:text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-4">
                         <div>
-                          <p className="text-gray-500 mb-0.5 md:mb-1 text-[10px] md:text-sm">Price per Vial</p>
-                          <p className="font-semibold text-gray-900 text-sm md:text-base">{formatPrice(product.base_price)}</p>
+                          <p className="text-gray-500 mb-0.5 text-[9px] md:text-sm">Price</p>
+                          <p className="font-semibold text-gray-900 text-xs md:text-base">{formatPrice(product.base_price)}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500 mb-0.5 md:mb-1 text-[10px] md:text-sm">Quantity</p>
-                          <p className="font-semibold text-gray-900 text-sm md:text-base">{product.stock_quantity} vials</p>
+                          <p className="text-gray-500 mb-0.5 text-[9px] md:text-sm">Qty</p>
+                          <p className="font-semibold text-gray-900 text-xs md:text-base">{product.stock_quantity}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500 mb-0.5 md:mb-1 text-[10px] md:text-sm">Total Value</p>
-                          <p className="font-semibold text-blue-600 text-sm md:text-base">{formatPrice(totalValue)}</p>
+                          <p className="text-gray-500 mb-0.5 text-[9px] md:text-sm">Value</p>
+                          <p className="font-semibold text-blue-600 text-xs md:text-base">{formatPrice(totalValue)}</p>
                         </div>
-                        <div>
-                          <p className="text-gray-500 mb-0.5 md:mb-1 text-[10px] md:text-sm">Expiration</p>
-                          <p className="font-semibold text-gray-900 text-sm md:text-base">N/A</p>
+                        <div className="hidden md:block">
+                          <p className="text-gray-500 mb-0.5 text-sm">Expiration</p>
+                          <p className="font-semibold text-gray-900 text-base">N/A</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-row md:flex-col gap-2 md:w-auto">
+                    <div className="flex flex-row md:flex-col gap-1.5 md:gap-2 md:w-auto">
                       <button
                         onClick={() => handleSell(product)}
-                        className="flex-1 md:flex-none bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg md:rounded-xl text-xs md:text-base font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                        className="flex-1 md:flex-none bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-2 md:px-6 py-1 md:py-2 rounded-md md:rounded-xl text-[10px] md:text-base font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
                       >
                         Sell
                       </button>
                       <button
                         onClick={() => handleEdit(product)}
-                        className="flex-1 md:flex-none bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg md:rounded-xl text-xs md:text-base font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                        className="flex-1 md:flex-none bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-2 md:px-6 py-1 md:py-2 rounded-md md:rounded-xl text-[10px] md:text-base font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(product)}
-                        className="flex-1 md:flex-none bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg md:rounded-xl text-xs md:text-base font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
+                        className="flex-1 md:flex-none bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-2 md:px-6 py-1 md:py-2 rounded-md md:rounded-xl text-[10px] md:text-base font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
                       >
                         Delete
                       </button>
