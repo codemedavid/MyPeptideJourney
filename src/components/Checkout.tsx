@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ShieldCheck, Package, CreditCard, Sparkles, Heart } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Package, CreditCard, Sparkles, Heart, MessageCircle } from 'lucide-react';
 import type { CartItem } from '../types';
 import { usePaymentMethods } from '../hooks/usePaymentMethods';
 import { useOrders } from '../contexts/OrdersContext';
@@ -15,6 +15,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
   const { createOrder } = useOrders();
   const [step, setStep] = useState<'details' | 'payment' | 'confirmation'>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [messengerUrl, setMessengerUrl] = useState<string>('');
   
   // Customer Details
   const [fullName, setFullName] = useState('');
@@ -161,10 +162,13 @@ Please confirm this order. Thank you!
       // Send order to Facebook Messenger
       const facebookUsername = 'maria.m.donaire.2024';
       const encodedMessage = encodeURIComponent(orderDetails);
-      const messengerUrl = `https://m.me/${facebookUsername}?text=${encodedMessage}`;
+      const messengerUrlValue = `https://m.me/${facebookUsername}?text=${encodedMessage}`;
+      
+      // Store messenger URL for manual button
+      setMessengerUrl(messengerUrlValue);
       
       // Open Facebook Messenger
-      window.open(messengerUrl, '_blank');
+      window.open(messengerUrlValue, '_blank');
       
       // Show confirmation
       setStep('confirmation');
@@ -188,11 +192,29 @@ Please confirm this order. Thank you!
               <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Order Sent!</span>
               <Sparkles className="w-7 h-7 text-yellow-500" />
             </h1>
-            <p className="text-gray-600 mb-8 text-base md:text-lg leading-relaxed">
+            <p className="text-gray-600 mb-6 text-base md:text-lg leading-relaxed">
               Your order has been sent to our Facebook Messenger. 
               <Heart className="inline w-5 h-5 text-pink-500 mx-1" />
               We will confirm your order and send you the payment details shortly!
             </p>
+
+            {/* Manual Messenger Button */}
+            {messengerUrl && (
+              <div className="mb-6">
+                <p className="text-sm text-gray-500 mb-3">
+                  Didn't open automatically? Click below to open Messenger:
+                </p>
+                <a
+                  href={messengerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+                >
+                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
+                  Open Facebook Messenger
+                </a>
+              </div>
+            )}
             
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-8 text-left border-2 border-blue-100">
               <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
